@@ -10,7 +10,7 @@ pool:
   name: AMD Ryzen 3 3200U
 
 variables:
-  gitHubRepoUrl: 'https://github.com/jasonfigueroa-org/DemoRazorApp.git'
+  gitHubRepoUrl: 'https://github.com/jasonfigueroa/DemoRazorApp.git'
 
 steps:
 - checkout: self
@@ -22,10 +22,10 @@ steps:
     git config --global user.name "Azure DevOps Mirror"
 
     # Add GitHub as a remote using the PAT for authentication
-    git remote add github https://jasonfigueroa:$GITHUB_PAT_VAR@github.com/jasonfigueroa-org/DemoRazorApp.git
+    git remote add github https://jasonfigueroa:$GITHUB_PAT_VAR@github.com/jasonfigueroa/DemoRazorApp.git
     
     # Ensure the remote is configured for pushing all refs
-    git remote set-url --push github https://jasonfigueroa:$GITHUB_PAT_VAR@github.com/jasonfigueroa-org/DemoRazorApp.git
+    git remote set-url --push github https://jasonfigueroa:$GITHUB_PAT_VAR@github.com/jasonfigueroa/DemoRazorApp.git
 
     echo "Mirroring all branches and tags to GitHub..."
     git push --mirror github
