@@ -7,7 +7,7 @@ trigger:
 - master
 
 pool:
-  vmImage: ubuntu-latest
+  name: AMD Ryzen 3 3200U
 
 variables:
   gitHubRepoUrl: 'https://github.com/jasonfigueroa-org/DemoRazorApp.git'
