@@ -7,32 +7,54 @@ trigger:
 - master
 
 pool:
-  name: AMD Ryzen 3 3200U
+  name: AMD-Ryzen-3-3200U
+  
+resources:
+  repositories:
+    - repository: github_repo
+      type: github
+      name: jasonfigueroa/DemoRazorApp
+      endpoint: DemoRazorApp-GitHub # Your service connection name
 
-variables:
-  gitHubRepoUrl: 'https://github.com/jasonfigueroa/DemoRazorApp.git'
+
+#variables:
+#  gitHubRepoUrl: 'https://github.com/jasonfigueroa/DemoRazorApp.git'
 
 steps:
 - checkout: self
-  displayName: 'Checkout branch'
+  displayName: 'Checkout Azure Repo'
+  fetchDepth: 0  # Get all history
+  
+- task: Bash@3
+  displayName: 'Configure Git'
+  inputs:
+    targetType: 'inline'
+    script: |
+      git config --global user.email "azuredevops@jasonfigueroa.com"
+      git config --global user.name "Azure DevOps Mirror"
 
-- script: |
-    echo "Setting up Git for mirroring to GitHub..."
-    git config --global user.email "azuredevops@jasonfigueroa.com"
-    git config --global user.name "Azure DevOps Mirror"
-
-    # Check if 'github' remote exists and remove it if it does
-    if git remote get-url github > /dev/null 2>&1; then
-      echo "Remote 'github' already exists. Removing it..."
-      git remote remove github
-    fi
-
-    # Add GitHub as a remote using the PAT for authentication
-    git remote add github https://$GITHUB_PAT_VAR@github.com/jasonfigueroa/DemoRazorApp.git
-
-    echo "Mirroring all branches and tags to GitHub..."
-    git push github --all
-    git push github --tags
-  displayName: 'Mirror to GitHub'
+- task: Bash@3
+  displayName: 'Sync to GitHub'
+  inputs:
+    targetType: 'inline'
+    script: |
+      echo "Configuring GitHub remote..."
+      git remote remove github 2>/dev/null || true
+      
+      # Using the service connection
+      git remote add github "https://x-token-auth:${SYSTEM_ACCESSTOKEN}@github.com/jasonfigueroa/DemoRazorApp.git"
+      
+      echo "Pushing to GitHub..."
+      if ! git push github --all -f; then
+        echo "Error: Failed to push branches to GitHub"
+        exit 1
+      fi
+      
+      if ! git push github --tags -f; then
+        echo "Error: Failed to push tags to GitHub"
+        exit 1
+      fi
+      
+      echo "Sync completed successfully!"
   env:
-    GITHUB_PAT_VAR: $(GitHubPat) # Map the Azure DevOps variable to an environment variable
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
