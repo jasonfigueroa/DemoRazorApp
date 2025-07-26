@@ -1,0 +1,32 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  gitHubRepoUrl: 'https://github.com/jasonfigueroa-org/DemoRazorApp.git'
+
+steps:
+- checkout: self
+  displayName: 'Checkout branch'
+
+- script: |
+    echo "Setting up Git for mirroring to GitHub..."
+    git config --global user.email "azuredevops@jasonfigueroa.com"
+    git config --global user.name "Azure DevOps Mirror"
+
+    # Add GitHub as a remote using the PAT for authentication
+    git remote add github https://jasonfigueroa:$(GitHubPat)@github.com/jasonfigueroa-org/DemoRazorApp.git
+    
+    # Ensure the remote is configured for pushing all refs
+    git remote set-url --push github https://jasonfigueroa:$(GitHubPat)@github.com/jasonfigueroa-org/DemoRazorApp.git
+
+    echo "Mirroring all branches and tags to GitHub..."
+    git push --mirror github
+  displayName: 'Mirror to GitHub'
