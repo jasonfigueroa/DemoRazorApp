@@ -8,17 +8,6 @@ trigger:
 
 pool:
   name: AMD-Ryzen-3-3200U
-  
-resources:
-  repositories:
-    - repository: github_repo
-      type: github
-      name: jasonfigueroa/DemoRazorApp
-      endpoint: DemoRazorApp-GitHub # Your service connection name
-
-
-#variables:
-#  gitHubRepoUrl: 'https://github.com/jasonfigueroa/DemoRazorApp.git'
 
 steps:
 - checkout: self
@@ -42,7 +31,7 @@ steps:
       git remote remove github 2>/dev/null || true
       
       # Using the service connection
-      git remote add github "https://x-token-auth:${SYSTEM_ACCESSTOKEN}@github.com/jasonfigueroa/DemoRazorApp.git"
+      git remote add github "https://$(GitHubPat)@github.com/jasonfigueroa/DemoRazorApp.git"
       
       echo "Pushing to GitHub..."
       if ! git push github --all -f; then
@@ -56,5 +45,3 @@ steps:
       fi
       
       echo "Sync completed successfully!"
-  env:
-    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
