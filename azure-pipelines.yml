@@ -28,13 +28,11 @@ steps:
     fi
 
     # Add GitHub as a remote using the PAT for authentication
-    git remote add github https://jasonfigueroa:$GITHUB_PAT_VAR@github.com/jasonfigueroa/DemoRazorApp.git
-    
-    # Ensure the remote is configured for pushing all refs
-    git remote set-url --push github https://jasonfigueroa:$GITHUB_PAT_VAR@github.com/jasonfigueroa/DemoRazorApp.git
+    git remote add github https://$(GITHUB_PAT_VAR)@github.com/jasonfigueroa/DemoRazorApp.git
 
     echo "Mirroring all branches and tags to GitHub..."
-    git push --mirror github
+    git push github --all
+    git push github --tags
   displayName: 'Mirror to GitHub'
   env:
     GITHUB_PAT_VAR: $(GitHubPat) # Map the Azure DevOps variable to an environment variable
