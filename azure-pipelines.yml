@@ -28,7 +28,7 @@ steps:
     fi
 
     # Add GitHub as a remote using the PAT for authentication
-    git remote add github https://$(GITHUB_PAT_VAR)@github.com/jasonfigueroa/DemoRazorApp.git
+    git remote add github https://$GITHUB_PAT_VAR@github.com/jasonfigueroa/DemoRazorApp.git
 
     echo "Mirroring all branches and tags to GitHub..."
     git push github --all
