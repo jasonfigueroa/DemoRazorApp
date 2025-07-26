@@ -21,6 +21,12 @@ steps:
     git config --global user.email "azuredevops@jasonfigueroa.com"
     git config --global user.name "Azure DevOps Mirror"
 
+    # Check if 'github' remote exists and remove it if it does
+    if git remote get-url github > /dev/null 2>&1; then
+      echo "Remote 'github' already exists. Removing it..."
+      git remote remove github
+    fi
+
     # Add GitHub as a remote using the PAT for authentication
     git remote add github https://jasonfigueroa:$GITHUB_PAT_VAR@github.com/jasonfigueroa/DemoRazorApp.git
     
