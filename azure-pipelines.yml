@@ -30,15 +30,27 @@ steps:
       echo "Configuring GitHub remote..."
       git remote remove github 2>/dev/null || true
       
-      # Using the service connection
+      # Using PAT
       git remote add github "https://$(GitHubPat)@github.com/jasonfigueroa/DemoRazorApp.git"
       
       echo "Pushing to GitHub..."
+      # Get current branch name
+      CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+      echo "Current branch: $CURRENT_BRANCH"
+      
+      # First, push the current branch
+      if ! git push -u github "$CURRENT_BRANCH:$CURRENT_BRANCH" -f; then
+        echo "Error: Failed to push current branch to GitHub"
+        exit 1
+      fi
+      
+      # Then push all branches
       if ! git push github --all -f; then
         echo "Error: Failed to push branches to GitHub"
         exit 1
       fi
       
+      # Finally push all tags
       if ! git push github --tags -f; then
         echo "Error: Failed to push tags to GitHub"
         exit 1
