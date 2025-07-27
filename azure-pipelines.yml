@@ -34,15 +34,12 @@ steps:
       git remote add github "https://$(GitHubPat)@github.com/jasonfigueroa/DemoRazorApp.git"
       
       echo "Pushing to GitHub..."
-      # Get current branch name
-      CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+      # Get the actual branch name from Azure DevOps built-in variables
+      CURRENT_BRANCH="${BUILD_SOURCEBRANCH#refs/heads/}"
       echo "Current branch: $CURRENT_BRANCH"
       
-      # First, push the current branch
-      if ! git push -u github "refs/heads/$CURRENT_BRANCH:refs/heads/$CURRENT_BRANCH" -f; then
-        echo "Error: Failed to push current branch to GitHub"
-        exit 1
-      fi
+      # Make sure we're on the right branch
+      git checkout -B "$CURRENT_BRANCH"
       
       # Then push all branches
       if ! git push github --all -f; then
