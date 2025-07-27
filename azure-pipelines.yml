@@ -39,7 +39,7 @@ steps:
       echo "Current branch: $CURRENT_BRANCH"
       
       # First, push the current branch
-      if ! git push -u github "$CURRENT_BRANCH:$CURRENT_BRANCH" -f; then
+      if ! git push -u github "refs/heads/$CURRENT_BRANCH:refs/heads/$CURRENT_BRANCH" -f; then
         echo "Error: Failed to push current branch to GitHub"
         exit 1
       fi
