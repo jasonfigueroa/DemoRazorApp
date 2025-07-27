@@ -6,6 +6,8 @@ namespace DemoRazorApp.Pages;
 public class PrivacyModel : PageModel
 {
     private readonly ILogger<PrivacyModel> _logger;
+    
+    public string Title { get; set; } = "Privacy Policy";
 
     public PrivacyModel(ILogger<PrivacyModel> logger)
     {
